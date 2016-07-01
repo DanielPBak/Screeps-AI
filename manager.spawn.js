@@ -7,21 +7,31 @@ module.exports = {
         if (spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0) {
             max_builders = 3;
             if (spawn.room.find(FIND_CONSTRUCTION_SITES).length > 10) {
-                max_builders = 5;
+                max_builders = 4;
             }
         }
         else {
-            max_builders = 3;
+            max_builders = 1;
         }
-        var max_harvesters = 4;
+        var max_harvesters = 2;
         var num_harvesters = _.sum(Game.creeps, (c) => c.memory.role == 'harvester');
         var max_upgraders = 2;
         var num_upgraders = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader');
         var num_builders = _.sum(Game.creeps, (c) => c.memory.role == 'builder');
-        var max_deliverers = 8;
+        var max_deliverers = 6;
         var num_deliverers = _.sum(Game.creeps, (c) => c.memory.role == 'deliverer');
         var max_grunts = 6;
         var num_grunts = _.sum(Game.creeps, (c) => c.memory.role == 'soldier.grunt');
+
+        if (Game.time % 50 == 0) {
+            console.log("Tick: " + Game.time);
+            console.log(num_harvesters + " out of " + max_harvesters + " harvesters.");
+            console.log(num_grunts + " out of " + max_grunts + " grunts.");
+            console.log(num_upgraders + " out of " + max_upgraders + " upgraders.");
+            console.log(num_builders + " out of " + max_builders + " builders.");
+            console.log(num_deliverers + " out of " + max_deliverers + " deliverers.");
+        }
+
 
 
         var name;

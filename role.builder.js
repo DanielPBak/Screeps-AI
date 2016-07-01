@@ -4,7 +4,7 @@ run: function(creep){
     var target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
     var mode = 'build';
 
-    if (target == null || ((creep.memory.id % 2 == 1) && false)){
+    if (target == null || ((creep.memory.id % 2 == 1) && true)){
         mode = 'repair';
             target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: structure =>
                  structure.hits < structure.hitsMax && structure.hits < 15000

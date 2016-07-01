@@ -93,6 +93,10 @@ module.exports = {
         else {
             source = creep.pos.findClosestByRange(FIND_SOURCES, {filter: src => src.pos.findInRange(FIND_MY_CREEPS, 1).length < 1});
 
+            if (source == null){
+                source = creep.pos.findClosestByRange(FIND_SOURCES);
+            }
+
             if (!(creep.harvest(source) < 0)){
                 creep.memory.gathering = true;
             }

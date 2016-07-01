@@ -5,7 +5,7 @@ module.exports = {
 
         var max_builders;
         if (spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0) {
-            max_builders = 3;
+            max_builders = 4;
             if (spawn.room.find(FIND_CONSTRUCTION_SITES).length > 10) {
                 max_builders = 4;
             }
@@ -18,9 +18,9 @@ module.exports = {
         var max_upgraders = 2;
         var num_upgraders = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader');
         var num_builders = _.sum(Game.creeps, (c) => c.memory.role == 'builder');
-        var max_deliverers = 6;
+        var max_deliverers = 5;
         var num_deliverers = _.sum(Game.creeps, (c) => c.memory.role == 'deliverer');
-        var max_grunts = 6;
+        var max_grunts = 5;
         var num_grunts = _.sum(Game.creeps, (c) => c.memory.role == 'soldier.grunt');
 
         if (Game.time % 50 == 0) {

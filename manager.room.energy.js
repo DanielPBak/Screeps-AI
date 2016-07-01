@@ -84,7 +84,7 @@ module.exports = {
 
             switch(structureType){
                 case STRUCTURE_CONTAINER:
-                    if (gameObject.store[RESOURCE_ENERGY] < gameObject.storeCapacity - 100){
+                    if (gameObject.store[RESOURCE_ENERGY] < gameObject.storeCapacity / 2){
                         to_return.push(gameObject);
                     }
                     break;

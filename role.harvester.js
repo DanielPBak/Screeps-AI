@@ -75,13 +75,14 @@ module.exports = {
 
     upgraded_run: function(creep){
         // Move to the nearest source
-        var source = creep.pos.findClosestByPath(FIND_SOURCES);
+        var source;
         var nearest_container = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: site =>
             site.structureType == STRUCTURE_CONTAINER
         });
 
 
         if (creep.memory.gathering == true){
+            source = creep.pos.findClosestByRange(FIND_SOURCES);
             creep.harvest(source);
             creep.transfer(nearest_container, "energy");
 
@@ -89,6 +90,7 @@ module.exports = {
         }
 
         else {
+            source = creep.pos.findClosestByRange(FIND_SOURCES, {filter: src => src.pos.findInRange(FIND_MY_CREEPS, 1).length < 2});
 
             if (!(creep.harvest(source) < 0)){
                 creep.memory.gathering = true;

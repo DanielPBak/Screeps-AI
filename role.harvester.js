@@ -3,9 +3,13 @@
 // Todo: If there are already two creeps next to the source, forget about it.
 // Tood: anticipate harvester death
 energyStorageManager = require('manager.energy.storage');
+spawnManager = require('manager.spawn');
 
 module.exports = {
     run: function (creep) {
+
+
+
         var source = creep.pos.findClosestByPath(FIND_SOURCES);
 
         if (creep.ticksToLive <= 2){
@@ -59,15 +63,20 @@ module.exports = {
                 creep.moveTo(source);
             }
 
-                // xfer to our target.
-            else if (creep.transfer(Game.getObjectById(creep.memory["target"]), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.getObjectById(creep.memory["target"]));
+                else {
+                var error_status = creep.transfer(Game.getObjectById(creep.memory["target"]), RESOURCE_ENERGY);
+
+                if (error_status == ERR_NOT_IN_RANGE){
+                    creep.moveTo(Game.getObjectById(creep.memory["target"]));
+                }
+
+                else if (error_status == ERR_FULL){
+                    energyStorageManager.toggle(creep.memory.target, creep.room);
+                    setNewTarget(creep);
+
+                }
             }
 
-            else if (creep.transfer(Game.getObjectById(creep.memory["target"]), RESOURCE_ENERGY) == ERR_FULL){
-                energyStorageManager.toggle(creep.memory.target, creep.room);
-                setNewTarget(creep);
-            }
 
         }
 
@@ -120,32 +129,20 @@ module.exports = {
 // Set the creep's new target.
 function setNewTarget(creep) {
     var modified_extension;
-    console.log("setting new target: " + creep);
 
 
-    var extensionTargets = creep.room.memory.extensions.filter(function (ext) {
-        return (!ext["is_target"] && (Game.getObjectById(ext["extension_structure"]["id"]).energy < 50));
-    });
+    var extensionTarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: str => (str.structureType == STRUCTURE_EXTENSION) && (str.energy < str.energyCapacity)});
 
-    if (typeof extensionTargets[0] == "undefined") {
-        // ?
+    console.log(creep.name + " extension targets: " + extensionTarget);
+
+    if (typeof extensionTarget == "undefined") {
         creep.memory.target = creep.pos.findClosestByPath(FIND_MY_SPAWNS)["id"];
         creep.moveTo(Game.getObjectById(creep.memory["target"]));
     }
 
     else {
-        creep.memory.target = extensionTargets[0]["extension_structure"]["id"];
+        creep.memory.target = extensionTarget["id"];
 
-        for (i in creep.room.memory.extensions){
-            if (creep.room.memory.extensions[i]["extension_structure"]["id"] == creep.memory.target){
-                console.log("New target is valid.");
-                creep.room.memory.extensions[i]["is_target"] = true;
-                console.log("Set is target flag to: " + creep.room.memory.extensions[i]["is_target"]);
-                modified_extension = i;
-
-            }
         }
 
     }
-
-}

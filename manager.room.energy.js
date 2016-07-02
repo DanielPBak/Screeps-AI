@@ -55,7 +55,10 @@ module.exports = {
         for (i in virtual_faucets){
             var id = virtual_faucets[i]["id"];
 
-            var structureType = Game.getObjectById(id).structureType;
+            if (Game.getObjectById(id) != null) {
+                var structureType = Game.getObjectById(id).structureType;
+            }
+
             var gameObject = Game.getObjectById(id);
 
             switch(structureType){
@@ -79,12 +82,17 @@ module.exports = {
         for (i in virtual_sinks){
             var id = virtual_sinks[i]["id"];
 
-            var structureType = Game.getObjectById(id).structureType;
+            if (Game.getObjectById(id) != null) {
+                var structureType = Game.getObjectById(id).structureType;
+            }
+            else {
+                return;
+            }
             var gameObject = Game.getObjectById(id);
 
             switch(structureType){
                 case STRUCTURE_CONTAINER:
-                    if (gameObject.store[RESOURCE_ENERGY] < gameObject.storeCapacity / 2){
+                    if (gameObject.store[RESOURCE_ENERGY] < gameObject.storeCapacity - 200){
                         to_return.push(gameObject);
                     }
                     break;

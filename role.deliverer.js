@@ -8,12 +8,6 @@ module.exports = {
         var sinks = managerRoomEnergy.get_sinks(creep.room);
         var target;
 
-        if (creep.memory.id == 9) {
-            console.log(creep.name + ":");
-            console.log(faucets.length);
-            console.log(sinks.length);
-            console.log(creep.carry.energy == 0);
-        }
 
 
         if (creep.memory.gathering == true) {
@@ -43,7 +37,15 @@ module.exports = {
         else if (creep.memory.gathering == false) {
 
             if (creep.carry.energy > 0){
-                target = creep.pos.findClosestByRange(sinks);
+                var tower = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: str => (str.structureType == STRUCTURE_TOWER) && (str.energy < str.energyCapacity - creep.carryCapacity)});
+                if (tower != null && true){
+                    target= tower;
+                }
+                else {
+                    target = creep.pos.findClosestByRange(sinks);
+                }
+
+
 
                 if (creep.transfer(target, "energy") == ERR_NOT_IN_RANGE){
                     creep.moveTo(target);

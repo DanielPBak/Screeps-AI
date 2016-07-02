@@ -31,7 +31,6 @@ module.exports = {
             }
 
             else if (spot != null){
-                console.log("Moving to spot: " + spot);
                 creep.moveTo(spot);
             }
 

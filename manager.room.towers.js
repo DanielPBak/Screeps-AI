@@ -20,8 +20,8 @@ module.exports = {
             if (!(hostile_creep == null)){
                 tower.attack(hostile_creep);
             }
-            else if (tower.energy > tower.energyCapacity * .80){
-                var structs = room.find(FIND_STRUCTURES, {filter: s => (s.hits < 20000)});
+            else if ((tower.energy > tower.energyCapacity * .50) && (tower.room.energyAvailable == tower.room.energyCapacityAvailable)){
+                var structs = room.find(FIND_STRUCTURES, {filter: s => (s.hits < 100000)});
                 var lowest = 100;
                 var target_struct;
                 for (i in structs){

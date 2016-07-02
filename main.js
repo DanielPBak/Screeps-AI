@@ -1,3 +1,10 @@
+// Todo: repair prioritization
+// Relay scheduling?
+// Todo: healer AI
+// Todo: ranger AI
+// Todo: schedule combat
+// Todo: micro flags
+
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
@@ -5,6 +12,9 @@ var roleDeliverer = require('role.deliverer');
 var managerSpawn = require('manager.spawn');
 var managerRoomEnergy = require('manager.room.energy');
 var roleSoldierGrunt = require('role.soldier.grunt');
+var roleSoldierShield = require('role.soldier.shield');
+var roleSoldierMedic = require('role.soldier.medic');
+var managerRoomTowers = require('manager.room.towers');
 
 module.exports.loop = function() {
     var reset = false;
@@ -52,6 +62,14 @@ module.exports.loop = function() {
                 roleDeliverer.run(creep);
             }
 
+            else if (creep.memory.role == 'soldier.shield'){
+                roleSoldierShield.run(creep);
+            }
+
+            else if (creep.memory.role == 'soldier.medic'){
+                roleSoldierMedic.run(creep);
+            }
+
 
         }
 
@@ -66,6 +84,7 @@ module.exports.loop = function() {
             room = Game.rooms[name];
 
             managerRoomEnergy.update_room(room);
+            managerRoomTowers.manage_towers(room);
 
 
 

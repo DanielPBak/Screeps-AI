@@ -13,16 +13,16 @@ module.exports = {
             }
         }
         else {
-            max_builders = 0;
+            max_builders = 1;
         }
         var max_harvesters = 2;
         var num_harvesters = _.sum(Game.creeps, (c) => c.memory.role == 'harvester');
         var max_upgraders = 2;
         var num_upgraders = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader');
         var num_builders = _.sum(Game.creeps, (c) => c.memory.role == 'builder');
-        var max_deliverers = 6;
+        var max_deliverers = 5;
         var num_deliverers = _.sum(Game.creeps, (c) => c.memory.role == 'deliverer');
-        var max_grunts = 0;
+        var max_grunts = 1;
         var num_grunts = _.sum(Game.creeps, (c) => c.memory.role == 'soldier.grunt');
         var max_medics = 0;
         var num_medics = _.sum(Game.creeps, (c) => c.memory.role == 'soldier.medic');

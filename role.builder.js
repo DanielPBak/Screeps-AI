@@ -9,7 +9,7 @@ run: function(creep){
     if (target == null || ((creep.memory.id % 2 == 1) && false)){
         mode = 'repair';
             target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: structure =>
-                 structure.hits < structure.hitsMax && structure.hits < 30000
+                 structure.hits < structure.hitsMax && structure.hits < 100000
             });
 
     }

@@ -1,6 +1,7 @@
 // Todo: Update target only when switching gathering state
 // Todo: creep.pos.findClosestByPath(FIND_EXTENSION, { filter: e => e.energy < e.energyCapacity });
 // Todo: If there are already two creeps next to the source, forget about it.
+// Todo: request replacement
 // Tood: anticipate harvester death
 energyStorageManager = require('manager.energy.storage');
 spawnManager = require('manager.spawn');

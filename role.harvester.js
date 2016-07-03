@@ -1,4 +1,4 @@
-// Todo: Update target only when switching gathering state
+// Todo: Update target only when switching harvesting state
 // Todo: creep.pos.findClosestByPath(FIND_EXTENSION, { filter: e => e.energy < e.energyCapacity });
 // Todo: If there are already two creeps next to the source, forget about it.
 // Todo: request replacement
@@ -8,7 +8,6 @@ spawnManager = require('manager.spawn');
 
 module.exports = {
     run: function (creep) {
-
 
 
         var source = creep.pos.findClosestByPath(FIND_SOURCES);
@@ -27,27 +26,28 @@ module.exports = {
 
 
 
-        else if (creep.memory.gathering == true) {
+        else if (creep.memory.harvesting == true) {
 
             if (creep.carry.energy == creep.carryCapacity) {
-                creep.memory.gathering = false;
+                creep.memory.harvesting = false;
                 setNewTarget(creep);
                 creep.moveTo(Game.getObjectById(creep.memory.target));
             }
 
             else if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source);
+                    creep.moveTo(source);
             }
+
         }
 
 
             // We are currently moving energy back
-        else if (creep.memory.gathering == false) {
+        else if (creep.memory.harvesting == false) {
 
 
             // We've transmitted all of our energy
             if (creep.carry.energy == 0) {
-                creep.memory.gathering = true;
+                creep.memory.harvesting = true;
 
                 // Reset the target's "is_target" to false.
                 var extensionTarget = creep.room.memory.extensions.filter(function (ext) {
@@ -85,6 +85,49 @@ module.exports = {
     },
 
     upgraded_run: function(creep){
+
+        if (creep.memory.need_replacement == null) {
+            creep.memory.need_replacement = false;
+        }
+
+        if (creep.ticksToLive == 70){
+            creep.memory.need_replacement = true;
+        }
+
+        if (creep.memory.need_replacement){
+            let name = spawnManager.spawn_creep('deliverer',Game.getObjectById("5775e490efd3405c4bb4e8e8"), creep.room.energyCapacityAvailable);
+            if (!(name < 0)){
+                creep.memory.need_replacement = false;
+            }
+        }
+
+        /*
+        if (creep.memory.replacement_needed == null){
+            creep.memory.replacement_needed = false;
+        }
+
+        if (creep.spawning){
+            creep.memory.counter = creep.memory.counter + 1;
+        }
+
+        if (creep.ticksToLive == creep.memory.counter){
+            creep.memory.replacement_needed = true;
+        }
+
+        if (creep.memory.replacement_needed){
+            let name = spawnManager.spawn_creep('harvester', creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: function(s){
+                return s.structureType == STRUCTURE_SPAWN;
+            }}), 800);
+            if (name < 0){
+                console.log(name);
+            }
+            else {
+                creep.memory.replacement_needed = false;
+            }
+
+        }
+        */
+
         // Move to the nearest source
         var source;
         var nearest_container = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: site =>
@@ -92,7 +135,7 @@ module.exports = {
         });
 
 
-        if (creep.memory.gathering == true){
+        if (creep.memory.harvesting == true){
             source = creep.pos.findClosestByRange(FIND_SOURCES);
             creep.harvest(source);
             creep.transfer(nearest_container, "energy");
@@ -101,6 +144,8 @@ module.exports = {
         }
 
         else {
+            creep.memory.counter = creep.memory.counter + 1;
+            // console.log(creep + creep.memory.counter);
             source = creep.pos.findClosestByRange(FIND_SOURCES, {filter: src => src.pos.findInRange(FIND_MY_CREEPS, 1).length < 1});
 
             if (source == null){
@@ -108,7 +153,7 @@ module.exports = {
             }
 
             if (!(creep.harvest(source) < 0)){
-                creep.memory.gathering = true;
+                creep.memory.harvesting = true;
             }
             else {
                 creep.moveTo(source);
@@ -121,7 +166,7 @@ module.exports = {
     reset: function(creep){
         creep.memory["target"] = null;
         creep.memory["harvesting"] = true;
-        creep.memory["gathering"] = true;
+        creep.memory["harvesting"] = true;
     }
 
 };
@@ -134,7 +179,6 @@ function setNewTarget(creep) {
 
     var extensionTarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: str => (str.structureType == STRUCTURE_EXTENSION) && (str.energy < str.energyCapacity)});
 
-    console.log(creep.name + " extension targets: " + extensionTarget);
 
     if (typeof extensionTarget == "undefined") {
         creep.memory.target = creep.pos.findClosestByPath(FIND_MY_SPAWNS)["id"];

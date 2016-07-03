@@ -1,10 +1,27 @@
 var managerRoomEnergy = require('manager.room.energy');
+var spawnManager = require('manager.spawn');
 // get best faucet
 // get best sink
 // Deliverer walks onto container when collecting
 
 module.exports = {
     run: function (creep) {
+        if (creep.memory.need_replacement == null) {
+            creep.memory.need_replacement = false;
+        }
+
+        if (creep.ticksToLive == 100){
+            creep.memory.need_replacement = true;
+        }
+
+        if (creep.memory.need_replacement){
+            let name = spawnManager.spawn_creep('deliverer',Game.getObjectById("5775e490efd3405c4bb4e8e8"), creep.room.energyCapacityAvailable);
+            if (!(name < 0)){
+                creep.memory.need_replacement = false;
+            }
+        }
+
+
         var faucets = managerRoomEnergy.get_faucets(creep.room);
         faucets = _.filter(faucets, function(f) {
             return f.store[RESOURCE_ENERGY] > 500;
@@ -12,6 +29,7 @@ module.exports = {
 
         var sinks = managerRoomEnergy.get_sinks(creep.room);
         var target;
+
 
 
 
@@ -42,7 +60,7 @@ module.exports = {
         else if (creep.memory.gathering == false) {
 
             if (creep.carry.energy > 0){
-                var tower = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: str => (str.structureType == STRUCTURE_TOWER) && (str.energy < str.energyCapacity - creep.carryCapacity)});
+                var tower = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: str => (str.structureType == STRUCTURE_TOWER) && (str.energy < str.energyCapacity - (creep.carryCapacity / 3))});
                 if (tower != null && true){
                     target= tower;
                 }

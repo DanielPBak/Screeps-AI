@@ -4,9 +4,11 @@
 // Todo: ranger AI
 // Todo: schedule combat
 // Todo: micro flags
+// Distance is length from PathFinder.
 
 var roleClaimant = require('role.claimant');
 var roleHarvester = require('role.harvester');
+var roleRemoteHarvester = require('role.remote_harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleDeliverer = require('role.deliverer');
@@ -15,9 +17,14 @@ var managerRoomEnergy = require('manager.room.energy');
 var roleSoldierGrunt = require('role.soldier.grunt');
 var roleSoldierShield = require('role.soldier.shield');
 var roleSoldierMedic = require('role.soldier.medic');
+var roleSoldierScout = require('role.soldier.scout');
 var managerRoomTowers = require('manager.room.towers');
+var managerMemory = require('manager.memory');
+var multiRoomNavigation = require('multiroom_navigation');
 
 module.exports.loop = function() {
+    // managerMemory.maintain();
+    PathFinder.use(true);
     var reset = false;
     var creep;
     var room;
@@ -71,9 +78,21 @@ module.exports.loop = function() {
                 roleSoldierMedic.run(creep);
             }
 
+                else if (creep.memory.role == 'soldier.scout'){
+                roleSoldierScout.run(creep);
+            }
+
             else if (creep.memory.role === 'claimant'){
                 console.log("Running claimant");
                 roleClaimant.run(creep);
+            }
+
+            else if (creep.memory.role === 'remote_harvester'){
+                roleRemoteHarvester.run(creep);
+            }
+
+            else if (creep.memory.role === 'primitive_harvester'){
+                roleHarvester.run(creep);
             }
 
 

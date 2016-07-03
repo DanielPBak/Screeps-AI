@@ -1,6 +1,15 @@
 // Construct the faucetList and sinkList.
+var managerRoomEnergy = require('manager.room.energy');
+
 module.exports = {
     manage_towers: function (room) {
+        var sinks = managerRoomEnergy.get_sinks(room);
+        sinks = sinks.filter(function(s){
+            return (((s.structureType == STRUCTURE_EXTENSION) && (s.energy != s.energyCapacity))
+            || ((s.structureType == STRUCTURE_CONTAINER) && (s.store[RESOURCE_ENERGY] < s.storeCapacity * .50)))
+        });
+
+        var emergency_repairs = room.find(FIND_STRUCTURES, {filter: s => ((s.hits / s.hitsMax < .02) && (s.hits < 20000))});
 
         var towers = room.find(FIND_MY_STRUCTURES, {filter: s => s.structureType == STRUCTURE_TOWER});
 
@@ -26,8 +35,8 @@ module.exports = {
             if (!(hostile_creep == null)){
                 tower.attack(hostile_creep);
             }
-            else if ((tower.energy > tower.energyCapacity * .50) && (tower.room.energyAvailable == tower.room.energyCapacityAvailable) && containers_are_full){
-                var structs = room.find(FIND_STRUCTURES, {filter: s => (s.hits < 100000)});
+            else if ((tower.energy > tower.energyCapacity * .50) && (tower.room.energyAvailable == tower.room.energyCapacityAvailable) && (sinks.length == 0)){
+                var structs = room.find(FIND_STRUCTURES, {filter: s => (s.hits < 20000)});
                 var lowest = 100;
                 var target_struct;
                 for (i in structs){
@@ -39,6 +48,10 @@ module.exports = {
                 if (target_struct != null) {
                     tower.repair(target_struct);
                 }
+            }
+
+                else if ((tower.energy > tower.energyCapacity * .25) && (emergency_repairs.length > 0)){
+                tower.repair(emergency_repairs[0]);
             }
 
 

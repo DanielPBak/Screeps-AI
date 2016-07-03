@@ -5,6 +5,7 @@
 // Todo: schedule combat
 // Todo: micro flags
 
+var roleClaimant = require('role.claimant');
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
@@ -68,6 +69,11 @@ module.exports.loop = function() {
 
             else if (creep.memory.role == 'soldier.medic'){
                 roleSoldierMedic.run(creep);
+            }
+
+            else if (creep.memory.role === 'claimant'){
+                console.log("Running claimant");
+                roleClaimant.run(creep);
             }
 
 

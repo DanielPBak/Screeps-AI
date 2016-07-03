@@ -6,9 +6,9 @@ module.exports = {
     run: function (spawn) {
 
         var max_builders;
-        if (spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0) {
+        if (Object.keys(Game.constructionSites).length > 0) {
             max_builders = 1;
-            if (spawn.room.find(FIND_CONSTRUCTION_SITES).length > 10) {
+            if (Object.keys(Game.constructionSites).length > 10) {
                 max_builders = 2;
             }
         }
@@ -20,7 +20,7 @@ module.exports = {
         var max_upgraders = 2;
         var num_upgraders = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader');
         var num_builders = _.sum(Game.creeps, (c) => c.memory.role == 'builder');
-        var max_deliverers = 4;
+        var max_deliverers = 6;
         var num_deliverers = _.sum(Game.creeps, (c) => c.memory.role == 'deliverer');
         var max_grunts = 0;
         var num_grunts = _.sum(Game.creeps, (c) => c.memory.role == 'soldier.grunt');
@@ -46,7 +46,15 @@ module.exports = {
 
         var name;
 
-        if (num_deliverers < max_deliverers) {
+        if (Memory["claims"].length > 0){
+            var targetRoom = Memory["claims"].pop();
+            console.log("CLAIMANT TARGET: " + targetRoom);
+            var claimantName = "Claimant: " + targetRoom;
+
+            name = spawn.createCreep([MOVE, CLAIM], claimantName, {targetRoom: targetRoom, role: 'claimant'});
+        }
+
+        else if (num_deliverers < max_deliverers) {
             var delivererID = getNextCreepID('deliverer');
             name = spawn.createCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY], 'Deliverer: ' + delivererID, {
                 gathering: true,

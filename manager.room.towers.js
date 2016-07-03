@@ -6,7 +6,13 @@ module.exports = {
 
         for (i in towers){
             var tower = towers[i];
-            var hostile_healer = (tower["pos"].findClosestByRange(FIND_HOSTILE_CREEPS, {filter: c => (c.getActiveBodyparts(HEAL) > 0)}));
+            var containers_are_full = tower.room.find(FIND_MY_STRUCTURES, {
+                    filter: s => ((s.structureType == STRUCTURE_CONTAINER) &&
+                    (s.store[RESOURCE_ENERGY] < s.storeCapacity - 1000) &&
+                    (s.pos.getRangeTo(s.pos.findClosestByRange(FIND_SOURCES)) > 2))}).length > 0;
+
+
+                var hostile_healer = (tower["pos"].findClosestByRange(FIND_HOSTILE_CREEPS, {filter: c => (c.getActiveBodyparts(HEAL) > 0)}));
             if (hostile_healer != null){
                 hostile_creep = hostile_healer;
             }
@@ -20,7 +26,7 @@ module.exports = {
             if (!(hostile_creep == null)){
                 tower.attack(hostile_creep);
             }
-            else if ((tower.energy > tower.energyCapacity * .50) && (tower.room.energyAvailable == tower.room.energyCapacityAvailable)){
+            else if ((tower.energy > tower.energyCapacity * .50) && (tower.room.energyAvailable == tower.room.energyCapacityAvailable) && containers_are_full){
                 var structs = room.find(FIND_STRUCTURES, {filter: s => (s.hits < 100000)});
                 var lowest = 100;
                 var target_struct;

@@ -19,7 +19,7 @@ module.exports = {
 
         for (i in containers){
             id = containers[i]["id"];
-            faucetStatus = containers[i].pos.findInRange(FIND_SOURCES, 2).length > 0;
+            faucetStatus = (containers[i].pos.findInRange(FIND_SOURCES, 2).length > 0);
             pos = containers[i].pos;
             var new_container = {"id": id, "faucet": faucetStatus, "pos": pos};
             room.memory.virtual_containers.push(new_container);

@@ -1,10 +1,15 @@
 var managerRoomEnergy = require('manager.room.energy');
 // get best faucet
 // get best sink
+// Deliverer walks onto container when collecting
 
 module.exports = {
     run: function (creep) {
         var faucets = managerRoomEnergy.get_faucets(creep.room);
+        faucets = _.filter(faucets, function(f) {
+            return f.store[RESOURCE_ENERGY] > 500;
+        });
+
         var sinks = managerRoomEnergy.get_sinks(creep.room);
         var target;
 

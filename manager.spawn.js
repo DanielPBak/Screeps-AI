@@ -283,7 +283,7 @@ module.exports = {
 
             // Model for everything else.
         else if (type == 'deliverer'){
-            console.log("trying to spawn deliverer");
+            console.log("trying to spawn or replace deliverer");
             segment = [CARRY, CARRY, MOVE];
 
             head = [];
